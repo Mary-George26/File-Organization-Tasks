@@ -2,65 +2,107 @@
 #include <fstream>
 #include <vector>
 #include <string>
-
 using namespace std;
 
-struct Person {
+int main()
+{
+    struct Person {
     string name;
     int age;
-};
+    };
 
-int main() {
-    int n;
-    cout << "Enter number of persons: ";
-    cin >> n;
+    int numOfPersons;
 
-    ofstream outFile("person.txt");
-    for (int i = 0; i < n; i++) {
-        string name;
-        int age;
+    cout << "How many persons do you want to add? ";
+    cin >> numOfPersons;
 
-        cout << "Enter name for person " << i + 1 << ": ";
-        cin.ignore();
-        getline(cin, name);
+    ofstream outFile("persons.txt");
 
-        cout << "Enter age for person " << i + 1 << ": ";
+    if (!outFile)
+    {
+        cout << "Error opening file." << endl;
+        return 1;
+    }
+
+    string name;
+    int age;
+
+    for (int i = 0; i < numOfPersons; i++)
+    {
+        cout << "\nPerson " << i + 1 << endl;
+
+        cout << "Enter name: ";
+        cin >> name;
+
+        cout << "Enter age: ";
         cin >> age;
 
-        outFile << name << "|" << age << "\n";
+        outFile << name << " " << age << endl;
     }
+
     outFile.close();
 
-    ifstream inFile("person.txt");
-    vector<Person> people;
-    string line;
+    cout << "\nData saved successfully." << endl;
 
-    while (getline(inFile, line)) {
-        size_t pos = line.find('|');
-        if (pos != string::npos) {
-            Person temp;
-            temp.name = line.substr(0, pos);
-            temp.age = stoi(line.substr(pos + 1));
-            people.push_back(temp);
-        }
+    //----------------
+
+ ifstream inFile("persons.txt");
+
+    if (!inFile)
+    {
+        cout << "Error opening persons.txt" << endl;
+        return 1;
     }
+
+    vector<Person> persons;
+    Person p;
+
+    while (inFile >> p.name >> p.age)
+    {
+        persons.push_back(p);
+    }
+
     inFile.close();
 
-    if (!people.empty()) {
-        Person youngest = people[0];
-        Person oldest = people[0];
-
-        for (size_t i = 1; i < people.size(); i++) {
-            if (people[i].age < youngest.age) youngest = people[i];
-            if (people[i].age > oldest.age)  oldest = people[i];
-        }
-
-        ofstream resFile("results.txt");
-        resFile << "Youngest: " << youngest.name << " (" << youngest.age << ")\n";
-        resFile << "Oldest: " << oldest.name << " (" << oldest.age << ")\n";
-        resFile.close();
+    if (persons.size() == 0)
+    {
+        cout << "No persons found." << endl;
+        return 0;
     }
 
-    cout << "Done! Check results.txt\n";
+    Person youngest = persons[0];
+    Person oldest = persons[0];
+
+    for (int i = 1; i < persons.size(); i++)
+    {
+        if (persons[i].age < youngest.age)
+        {
+            youngest = persons[i];
+        }
+
+        if (persons[i].age > oldest.age)
+        {
+            oldest = persons[i];
+        }
+    }
+
+    ofstream resultFile("results.txt");
+
+    if (!resultFile)
+    {
+        cout << "Error opening results.txt" << endl;
+        return 1;
+    }
+
+    resultFile << "Youngest Person:\n";
+    resultFile << youngest.name << " " << youngest.age << endl;
+
+    resultFile << "\nOldest Person:\n";
+    resultFile << oldest.name << " " << oldest.age << endl;
+
+    resultFile.close();
+
+    cout << "Results saved successfully." << endl;
+
     return 0;
 }
