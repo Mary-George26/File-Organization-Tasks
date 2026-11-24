@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <fstream>
 
 using namespace std;
@@ -11,6 +12,7 @@ int main()
 
     if(!myfile.is_open()){
         cout<<"Error: File is not open!\n";
+        return 0;
     }
     else{
         cout<<"File is open successfully.\n";
