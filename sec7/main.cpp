@@ -1,30 +1,50 @@
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <algorithm>
-
+#include <algorithm>   
+#include <vector>
+#include <string> 
 using namespace std;
 
-int main() {
-    string names[100];
-    int n = 0;
+int main()
+{
+    ifstream input("names.txt"); 
+    if (!input.is_open())
+    {
+        cout << "Error: Could not open names.txt" << endl;
+        return 1;
+    }
 
-    ifstream in("names.txt");
-    while (getline(in, names[n])) {
-        if (!names[n].empty()) {
-            n++;
+    string line;         
+    vector<string> names;
+
+    while (getline(input, line))
+    {
+        if (!line.empty()) 
+        {
+            names.push_back(line);  
         }
     }
-    in.close();
 
-    sort(names, names + n);
+    sort(names.begin(), names.end());
 
-    ofstream out("sorted_names.txt");
-    for (int i = 0; i < n; i++) {
-        out << names[i] << endl;
+    input.close();
+
+    ofstream output("sorted_names.txt");
+    if (!output.is_open())
+    {
+        cout << "Error: Could not create sort_names.txt" << endl;
+        return 1;
+    }
+
+    cout << "Names sorted Successfully" << endl;
+
+    for (int i = 0; i < names.size(); i++)
+    {
+        output << names[i] << endl; 
         cout << names[i] << endl;
     }
-    out.close();
+
+    output.close();
 
     return 0;
 }
